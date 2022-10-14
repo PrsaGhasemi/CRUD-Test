@@ -23,4 +23,4 @@ const transportDetail = smtpTransport({
         text: message,
         subject: "Verification Mail",
         })
-  }
+  };

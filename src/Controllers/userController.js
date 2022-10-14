@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 //------------------------------------
 const User = require('../Model/User');
 const {
-    findByEmail
+    findByEmail,findByVerificationCode
 } = require('../Services/services');
 const {
     sendMail
@@ -38,10 +38,27 @@ exports.createUser = async (req, res, next) => {
                 confirmationCode: verificationCode
             })
             res.status(200).json({
-                message: "user created succesfully"
+                message: "user created succesfully, head him into verify page!"
             })
         }
     } catch (err) {
         next(err)
     }
+}
+
+
+exports.verifyEmail = async (req,res,next) => {
+    const {verificationCode} = req.body
+    try {
+        const pendingUser = findByVerificationCode()
+        if(!pendingUser) {
+            const error = new Error("This user doesnt exist!")
+            error.statusCode = 421;
+            throw error
+        } else {
+            
+        }
+    } catch (err) {
+        next(err)
+    }   
 }
