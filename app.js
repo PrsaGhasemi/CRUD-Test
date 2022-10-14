@@ -10,10 +10,14 @@ const app = express()
 dotenv.config({path: "./src/Config/config.env"})
 //* Body-Parser
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(express.json())
 //* Error-Handler
-//! app.use(errorHandler())
+app.use(errorHandler)
 //* ConnectDB
 connectDB()
+//* Routes
+app.use("/users", require('./src/Routes/userRoute'))
+
 
 const PORT = process.env.PORT
 app.listen(PORT , () => {
