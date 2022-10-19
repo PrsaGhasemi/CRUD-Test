@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 //---------------------------
 const {errorHandler} = require('./src/Middlewares/errorHandler');
 const {connectDB} = require('./src/Config/db');
+const {setHeaders} = require('./src/Middlewares/headers');
 //* Express
 const app = express()
 //* Config
@@ -13,6 +14,8 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.json())
 //* Error-Handler
 app.use(errorHandler)
+//* Set-Headers
+app.use(setHeaders)
 //* ConnectDB
 connectDB()
 //* Routes

@@ -5,6 +5,6 @@ exports.findByEmail = async (email) => {
     return User.findOne({email})
 }
 
-exports.findByVerificationCode = async (verificationCode) => {
-    return User.findOne({verificationCode})
+exports.findByVerificationCode = async (confirmationCode) => {
+    return User.findOne({confirmationCode})
 }
