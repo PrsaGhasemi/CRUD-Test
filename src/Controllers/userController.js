@@ -92,7 +92,8 @@ exports.handleLogin = async (req, res, next) => {
             error.statusCode = 421;
             throw error
         }
-        if (!bcrypt.compare(user.password, password)) {
+        const passwordValidation = await bcrypt.compare(password, user.password)
+        if (!passwordValidation) {
             const error = new Error("email or password is wrong!")
             error.statusCode = 421;
             throw error
@@ -154,26 +155,29 @@ exports.listAllUsers = async (req,res,next) => {
 }
 
 exports.editUser = async (req,res,next) => {
-    const {firstName,lastName,role,password} = req.query.params
+    const {firstName,lastName,password,role} = req.body;
     try {
-        const user = User.findOne({email})
+        const user = await User.findById(req.params.id)
         if(!user) {
-            const error = new Error("user doesnt exist");
-            error.statusCode = 404;
-            throw error;
-        } if(req.userRole == "admin" || req.userId == user.userId ) {
-            await User.save({
-                firstName: req.firstName,
-                lastName: req.lastName,
-                password: req.password,
-                role: "operator"
-            })
-            res.status(200).json({message: "user edited succesfuly"}) 
-        } if(req.userRole == "admin") {
-            await User.save({
-                role: req.role
-            })
+            const error = new Error("user doesnt exist!")
+            error.statusCode = 404
+            throw error
+        } if(req.userId == user._id || (req.userRole == "admin" & user.role !== "admin")) {
+            user.firstName = firstName,
+            user.lastName = lastName,
+            user.password = await bcrypt.hash(password,10),
+            user.role = "operator"
+            await user.save()
+            if(req.userRole == "admin" & user.role !== "admin") {
+                user.role = role
+                await user.save()
             }
+            res.status(200).json({message: "user edited successfuly"})
+        } else {
+            const error = new Error("you are unable to edit this user!");
+            error.statusCode = 401;
+            throw error
+        }
     } catch (err) {
         next(err)
     }

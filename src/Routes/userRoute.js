@@ -17,7 +17,7 @@ router.get("/login" , userController.handleLogin)
 router.delete("/deleteUser/:id", authenticated , userController.deleteUser)
 
 //put editUser
-router.put("/editUser/" , authenticated , userController.editUser)
+router.put("/editUser/:id" , authenticated , userController.editUser)
 
 //get allUsersList
 router.get("/listall" , authenticated , userController.listAllUsers)
